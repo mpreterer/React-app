@@ -1,17 +1,16 @@
 import React from "react";
-import { Route, Router, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
-import routes from "../router/routes";
+import { publicRoutes, privateRoutes } from "../router/routes";
 
 const AppRouter = () => {
   return (
     <Routes>
-      {routes.map((route) => (
-        <Route
-          path={route.path}
-          element={route.element}
-          exact={route.exact}
-        />
+      {privateRoutes.map((route) => (
+        <Route path={route.path} element={route.element} exact={route.exact} />
+      ))}
+      {publicRoutes.map((route) => (
+        <Route path={route.path} element={route.element} exact={route.exact} />
       ))}
     </Routes>
   );
