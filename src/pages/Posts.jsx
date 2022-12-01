@@ -1,18 +1,18 @@
-import '../styles/App.css';
+import "../styles/App.css";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
-import PostService from '../API/PostService';
-import Pagination from '../components/Pagination';
-import PostFilter from '../components/PostFilter';
-import PostForm from '../components/PostForm';
-import PostList from '../components/PostList';
-import MyButton from '../components/UI/button/MyButton';
-import Loader from '../components/UI/loader/Loader';
-import MyModal from '../components/UI/modal/MyModal';
-import { getPageCount } from '../components/utils/page';
-import useFetching from '../hooks/useFetching';
-import { usePosts } from '../hooks/usePosts';
+import PostService from "../API/PostService";
+import Pagination from "../components/Pagination";
+import PostFilter from "../components/PostFilter";
+import PostForm from "../components/PostForm";
+import PostList from "../components/PostList";
+import MyButton from "../components/UI/button/MyButton";
+import Loader from "../components/UI/loader/Loader";
+import MyModal from "../components/UI/modal/MyModal";
+import { getPageCount } from "../components/utils/page";
+import useFetching from "../hooks/useFetching";
+import { usePosts } from "../hooks/usePosts";
 
 function Posts() {
   const [posts, setPosts] = useState([]);
@@ -24,16 +24,30 @@ function Posts() {
   const [page, setPage] = useState(1);
   const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
     const response = await PostService.getAll(limit, page);
-    setPosts(response.data);
+    setPosts([...posts, ...response.data]);
     const totalCount = response.headers["x-total-count"];
     setTotalPage(getPageCount(totalCount, limit));
   });
   const changePage = (page) => {
     setPage(page);
   };
+  const lastElement = useRef();
+  const observer = useRef();
 
   useEffect(() => {
-    fetchPosts();
+    if (isPostsLoading) return;
+    if (observer.current) observer.current.disconnect();
+    var callback = function (entries, observer) {
+      if (entries[0].isIntersecting && page < totalPages) {
+        setPage(page + 1);
+      }
+    };
+    observer.current = new IntersectionObserver(callback);
+    observer.current.observe(lastElement.current);
+  }, [isPostsLoading]);
+
+  useEffect(() => {
+    fetchPosts(limit, page);
   }, [page]);
 
   const createPost = (newPost) => {
@@ -56,7 +70,13 @@ function Posts() {
       <hr style={{ margin: "15px 0" }} />
       <PostFilter filter={filter} setFilter={setFilter} />
       {postError && <h1>Ошибка загрузки {postError}</h1>}
-      {isPostsLoading ? (
+      <PostList
+        remove={removePost}
+        posts={sortedAndSearchPosts}
+        title="Возможно список постов"
+      />
+      <div ref={lastElement} style={{ height: 20, background: "red" }}></div>
+      {isPostsLoading && (
         <div
           style={{
             display: "flex",
@@ -66,12 +86,6 @@ function Posts() {
         >
           <Loader />
         </div>
-      ) : (
-        <PostList
-          remove={removePost}
-          posts={sortedAndSearchPosts}
-          title="Возможно список постов"
-        />
       )}
       <Pagination page={page} changePage={changePage} totalPages={totalPages} />
     </div>

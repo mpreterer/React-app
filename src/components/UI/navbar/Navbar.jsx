@@ -5,10 +5,14 @@ import MyButton from "../button/MyButton";
 
 const Navbar = () => {
   const { isAuth, setIsAuth } = useContext(AuthContext);
+  const logout = () => {
+    setIsAuth(false);
+    localStorage.removeItem("auth");
+  };
 
   return (
     <div className="navbar">
-      <MyButton onClick={() => setIsAuth(false)}>Выйти</MyButton>
+      <MyButton onClick={logout}>Выйти</MyButton>
       <div className="navbar__links">
         <Link to="/about">О нас</Link>
         <Link to="/posts">Посты</Link>
