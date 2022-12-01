@@ -2,7 +2,7 @@
 
 ### Распаковка:
 Клонировать:
->``https://github.com/mpreterer/React-app.git```
+>```git clone https://github.com/mpreterer/React-app.git```
 ---
 
 Для запуска:
