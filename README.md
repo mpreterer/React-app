@@ -1,19 +1,9 @@
-# Getting Started with Create React App
+# Учебный проект курса от Ulbi TV
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Распаковка:
+Клонировать:
+>```git clone https://github.com/mpreterer/React-app.git```
+---
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-### `npm run build`
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-## Learn More
-
-### Code Splitting
+Для запуска:
+>```npm start```
