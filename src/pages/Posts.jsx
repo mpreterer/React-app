@@ -13,6 +13,8 @@ import MyModal from "../components/UI/modal/MyModal";
 import { getPageCount } from "../components/utils/page";
 import useFetching from "../hooks/useFetching";
 import { usePosts } from "../hooks/usePosts";
+import useObserver from "../hooks/useObserver";
+import MySelect from "../components/UI/select/MySelect";
 
 function Posts() {
   const [posts, setPosts] = useState([]);
@@ -32,28 +34,19 @@ function Posts() {
     setPage(page);
   };
   const lastElement = useRef();
-  const observer = useRef();
-
-  useEffect(() => {
-    if (isPostsLoading) return;
-    if (observer.current) observer.current.disconnect();
-    var callback = function (entries, observer) {
-      if (entries[0].isIntersecting && page < totalPages) {
-        setPage(page + 1);
-      }
-    };
-    observer.current = new IntersectionObserver(callback);
-    observer.current.observe(lastElement.current);
-  }, [isPostsLoading]);
 
   useEffect(() => {
     fetchPosts(limit, page);
-  }, [page]);
+  }, [page, limit]);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
     setModal(false);
   };
+
+  useObserver(lastElement, page < totalPages, isPostsLoading, () => {
+    setPage(page + 1);
+  });
 
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
@@ -70,12 +63,23 @@ function Posts() {
       <hr style={{ margin: "15px 0" }} />
       <PostFilter filter={filter} setFilter={setFilter} />
       {postError && <h1>Ошибка загрузки {postError}</h1>}
+      <MySelect
+        value={limit}
+        onChange={(value) => setLimit(value)}
+        defaultValue="Кол-во элементов на странице"
+        options={[
+          { value: 5, name: "5" },
+          { value: 10, name: "10" },
+          { value: 25, name: "25" },
+          { value: -1, name: "Показать всё" },
+        ]}
+      ></MySelect>
       <PostList
         remove={removePost}
         posts={sortedAndSearchPosts}
         title="Возможно список постов"
       />
-      <div ref={lastElement} style={{ height: 20, background: "red" }}></div>
+      <div ref={lastElement} style={{ height: 20 }}></div>
       {isPostsLoading && (
         <div
           style={{
