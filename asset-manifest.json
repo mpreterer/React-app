@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/git@github.com:mpreterer/React-app.git/static/css/main.7b475e37.css",
+    "main.js": "/git@github.com:mpreterer/React-app.git/static/js/main.1fa8a70e.js",
+    "index.html": "/git@github.com:mpreterer/React-app.git/index.html",
+    "main.7b475e37.css.map": "/git@github.com:mpreterer/React-app.git/static/css/main.7b475e37.css.map",
+    "main.1fa8a70e.js.map": "/git@github.com:mpreterer/React-app.git/static/js/main.1fa8a70e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7b475e37.css",
+    "static/js/main.1fa8a70e.js"
+  ]
+}
